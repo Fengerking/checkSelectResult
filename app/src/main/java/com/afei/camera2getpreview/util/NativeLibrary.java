@@ -6,8 +6,6 @@ public class NativeLibrary {
         System.loadLibrary("native-lib");
     }
 
-    public static native void yuv420p2rgba(byte[] yuv420p,
-                                          int width,
-                                          int height,
-                                          byte[] rgba);
+    public static native void   yuv420p2rgba(byte[] yuv420p, int width, int height, byte[] rgba);
+    public static native int    checkSelectResult(byte[] yuv420p, int width, int height, byte[] result);
 }
