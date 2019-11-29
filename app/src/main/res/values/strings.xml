@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Camera2GetPreview</string>
+    <string name="app_name">结果统计</string>
 
     <string name="permission_tip">Tip</string>
     <string name="permission_msg">request permission failed! \n

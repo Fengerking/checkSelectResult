@@ -21,9 +21,11 @@ JNIEXPORT int JNICALL Java_com_afei_camera2getpreview_util_NativeLibrary_checkSe
     CCheckSelectResult checkResult;
 
     int nRC = checkResult.CheckBuffer(reinterpret_cast<unsigned char *>(pYUV420));
+    //int nRC = checkResult.OpenFile("/sdcard/01.yuv");
+    unsigned char * pSelectResult = reinterpret_cast<unsigned char *>(pResult);
     for (int i = 0; i < nRC; i++) {
-        *pResult++ = (char)checkResult.m_nSelResult[i][0];
-        *pResult++ = (char)checkResult.m_nSelResult[i][1];
+        *pSelectResult++ = (char)checkResult.m_nSelResult[i][0];
+        *pSelectResult++ = (char)checkResult.m_nSelResult[i][1];
     }
 
     env->ReleaseByteArrayElements(yuv420p_, pYUV420, 0);

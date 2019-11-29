@@ -209,8 +209,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             mIsShutter = false;
 
             // save yuv data
-            String yuvPath = FileUtil.SAVE_DIR + System.currentTimeMillis() + ".yuv";
-            FileUtil.saveBytes(mYuvBytes, yuvPath);
+//            String yuvPath = FileUtil.SAVE_DIR + System.currentTimeMillis() + ".yuv";
+//            FileUtil.saveBytes(mYuvBytes, yuvPath);
 
             // save bitmap data
 //            String jpgPath = yuvPath.replace(".yuv", ".jpg");
@@ -218,7 +218,13 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
 //            FileUtil.saveBitmap(bitmap, jpgPath);
 
             byte[] result = new byte[64];
-            NativeLibrary.checkSelectResult(mYuvBytes, width, height, result);
+            int nRC = NativeLibrary.checkSelectResult(mYuvBytes, width, height, result);
+            if (nRC > 0) {
+                for (int i = 0; i < nRC; i++) {
+                    m_nCheckR[i][0] = result[i*2];
+                    m_nCheckR[i][1] = result[i*2+1];
+                }
+            }
             mTakePictureIv.postDelayed(()->showCheckResult(), 2);
         }
     }
