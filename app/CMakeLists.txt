@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.4.1)
 add_library( native-lib
              SHARED
              ${CMAKE_SOURCE_DIR}/src/main/cpp/src/com_afei_camera2getpreview_util_NativeLibrary.cpp
-             ${CMAKE_SOURCE_DIR}/src/main/cpp/src/ImageUtil.cpp )
+             ${CMAKE_SOURCE_DIR}/src/main/cpp/src/ImageUtil.cpp
+             ${CMAKE_SOURCE_DIR}/src/main/cpp/src/CCheckSelectResult.cpp )
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/src/main/cpp/include

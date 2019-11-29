@@ -15,6 +15,9 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_afei_camera2getpreview_util_NativeLibrary_yuv420p2rgba
   (JNIEnv *, jclass, jbyteArray, jint, jint, jbyteArray);
 
+JNIEXPORT int JNICALL Java_com_afei_camera2getpreview_util_NativeLibrary_checkSelectResult
+        (JNIEnv *env, jclass type, jbyteArray yuv420p_, jint width, jint height, jbyteArray result);
+
 #ifdef __cplusplus
 }
 #endif
