@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class FileUtil {
 
-    public static final String SAVE_DIR = "/sdcard/DCIM/Camera2GetPreview/";
+    public static final String SAVE_DIR = "/sdcard/DCIM/checkSelectResult/";
 
     public static boolean saveBytes(byte[] bytes, String imagePath) {
         File file = new File(imagePath);

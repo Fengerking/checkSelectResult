@@ -35,6 +35,7 @@ public:
 	virtual int 	CheckBuffer(unsigned char * pYUVBuff);
 
 protected:
+	virtual int		cleanPixel(void);
 	virtual int		checkLines(pixelInfo ** ppInfo, int nFoundX);
 	virtual int		checkResult(void);
 

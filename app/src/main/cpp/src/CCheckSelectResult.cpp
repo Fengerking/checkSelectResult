@@ -18,7 +18,7 @@
 CCheckSelectResult::CCheckSelectResult(void) {
 	m_nWidth = 640;
 	m_nHeight = 480;
-	m_nBValue = 80;
+	m_nBValue = 108;
 
 	m_pFileBuff = NULL;
 	m_ppBlackPixel = NULL;
@@ -79,7 +79,7 @@ int CCheckSelectResult::OpenFile(const char * pYUVFile) {
 	fread(m_pFileBuff, 1, m_nWidth * m_nHeight, hFile);
 	fclose(hFile);
 
-	return CheckBuffer (m_pFileBuff);
+	return CheckBuffer(m_pFileBuff);
 }
 
 int CCheckSelectResult::CheckBuffer(unsigned char * pYUVBuff) {
@@ -90,10 +90,9 @@ int CCheckSelectResult::CheckBuffer(unsigned char * pYUVBuff) {
 
 	if (m_pFileBuff == NULL) {
 		m_pFileBuff = new unsigned char[nSize];
-		memcpy (m_pFileBuff, pYUVBuff, nSize);
+		memcpy(m_pFileBuff, pYUVBuff, nSize);
 	}
 
-	char	szDebugTxt[256];
 	// statistic every value pixels
 	int nPixelCount[256];
 	memset(nPixelCount, 0, sizeof(nPixelCount));
@@ -122,6 +121,7 @@ int CCheckSelectResult::CheckBuffer(unsigned char * pYUVBuff) {
 		}
 	}
 	qsort(m_ppBlackPixel, m_nBlackCount, sizeof(pixelInfo *), comparPixelX);
+	cleanPixel();
 
 	m_nLinePCount = m_nBlackCount;
 	m_ppLinePixel = new pixelInfo*[m_nLinePCount];
@@ -133,7 +133,7 @@ int CCheckSelectResult::CheckBuffer(unsigned char * pYUVBuff) {
 		m_rcLines[i].nX = m_nWidth; m_rcLines[i].nR = 0;
 		m_rcLines[i].nY = m_nHeight; m_rcLines[i].nB = 0;
 	}
-	m_nFindLines = 0;
+	m_nFindLines = 1;
 	int			nFoundX = 0;
 	int			nFoundY = 0;
 	int			nStartX = 0;
@@ -160,6 +160,7 @@ int CCheckSelectResult::CheckBuffer(unsigned char * pYUVBuff) {
 
 			nStartX = 0;
 			nFoundX = 0;
+			i++;
 		}
 		memcpy(m_ppLinePixel[nFoundX], m_ppBlackPixel[i], sizeof(pixelInfo));
 		nFoundX++;
@@ -169,9 +170,58 @@ int CCheckSelectResult::CheckBuffer(unsigned char * pYUVBuff) {
 		checkLines(m_ppLinePixel, nFoundX);
 	}
 
+	int nLineW = m_rcLines[2].nX - m_rcLines[1].nX;
+	m_rcLines[0].nX = m_rcLines[1].nX - nLineW;
+	m_rcLines[0].nR = m_rcLines[1].nR - nLineW;
+	m_rcLines[0].nY = m_rcLines[1].nY;
+	m_rcLines[0].nB = m_rcLines[1].nB;
 	checkResult();
 
 	return m_nFindLines;
+}
+
+int	CCheckSelectResult::cleanPixel(void) {
+	int nLinePixels = 0;
+	int i = 0;
+	int nXPixels[640] = { 0 };
+	int nSameX = 0;
+	for (i = 0; i < m_nBlackCount - 1; i++) {
+		nSameX = 1;
+		while (m_ppBlackPixel[i]->nX == m_ppBlackPixel[i + 1]->nX) {
+			nSameX++;
+			i++;
+			if (i > m_nBlackCount - 2)
+				break;
+		}
+		if (nSameX > 10) {
+			nLinePixels += nSameX;
+			nXPixels[m_ppBlackPixel[i]->nX] = 1;
+		}
+		else {
+			nXPixels[m_ppBlackPixel[i]->nX] = 0;
+		}
+	}
+
+	pixelInfo ** ppPixelInfo = new pixelInfo*[nLinePixels];
+	for (i = 0; i < nLinePixels; i++) {
+		ppPixelInfo[i] = new pixelInfo();
+	}
+
+	int nIndex = 0;
+	for (i = 0; i < m_nBlackCount; i++) {
+		if (nXPixels[m_ppBlackPixel[i]->nX] == 0)
+			continue;
+		memcpy(ppPixelInfo[nIndex++], m_ppBlackPixel[i], sizeof(pixelInfo));
+	}
+	for (i = 0; i < m_nLinePCount; i++) {
+		if (m_ppBlackPixel[i] != NULL)
+			delete m_ppBlackPixel[i];
+	}
+	delete[]m_ppBlackPixel;
+	m_ppBlackPixel = ppPixelInfo;
+	m_nBlackCount = nLinePixels;
+
+	return 0;
 }
 
 int CCheckSelectResult::checkResult(void) {
@@ -232,9 +282,9 @@ int	CCheckSelectResult::checkLines(pixelInfo ** ppInfo, int nFoundX) {
 			m_rcLines[m_nFindLines].nB = m_ppLinePixel[j]->nY;
 		nFoundY++;
 	}
-	if (nFoundY > nFoundX * 6 / 10) {
-		m_nFindLines++;
-	}
+//	if (nFoundY > nFoundX * 6 / 10) {
+	m_nFindLines++;
+//	}
 	return 1;
 }
 

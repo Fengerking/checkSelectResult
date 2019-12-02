@@ -209,13 +209,13 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             mIsShutter = false;
 
             // save yuv data
-//            String yuvPath = FileUtil.SAVE_DIR + System.currentTimeMillis() + ".yuv";
-//            FileUtil.saveBytes(mYuvBytes, yuvPath);
+            String yuvPath = FileUtil.SAVE_DIR + System.currentTimeMillis() + ".yuv";
+            FileUtil.saveBytes(mYuvBytes, yuvPath);
 
             // save bitmap data
-//            String jpgPath = yuvPath.replace(".yuv", ".jpg");
-//            Bitmap bitmap = ColorConvertUtil.yuv420pToBitmap(mYuvBytes, width, height);
-//            FileUtil.saveBitmap(bitmap, jpgPath);
+            String jpgPath = yuvPath.replace(".yuv", ".jpg");
+            Bitmap bitmap = ColorConvertUtil.yuv420pToBitmap(mYuvBytes, width, height);
+            FileUtil.saveBitmap(bitmap, jpgPath);
 
             byte[] result = new byte[64];
             int nRC = NativeLibrary.checkSelectResult(mYuvBytes, width, height, result);
